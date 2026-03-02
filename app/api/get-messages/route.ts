@@ -25,7 +25,17 @@ export async function GET(req: Request) {
       { $match: { _id: userId } },
       { $unwind: "$messages" },
       { $sort: { "messages.createdAt": -1 } },
+      { $group: { _id: "$_id", messages: { $push: "$messages" } } },
     ]);
+
+    if (!foundUser || foundUser.length === 0) {
+      return Response.json(
+        { success: false, message: "User not found" },
+        { status: 404 },
+      );
+    }
+
+    return Response.json({ success: true, messages: foundUser[0].messages });
   } catch (error) {
     return Response.json(
       { success: false, message: "User not found" },
