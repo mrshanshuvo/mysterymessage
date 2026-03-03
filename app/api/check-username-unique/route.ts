@@ -14,20 +14,25 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const username = url.searchParams.get("username");
 
-    // validate with zod
     const parsed = UsernameQuerySchema.safeParse({ username });
+
     if (!parsed.success) {
+      const msg = parsed.error.issues?.[0]?.message ?? "Invalid username";
+
       return Response.json(
         {
           success: false,
-          message: parsed.error.message,
+          message: msg,
         },
         { status: 400 },
       );
     }
 
+    // ✅ use validated value from Zod
+    const usernameValue = parsed.data.username;
+
     const existingUserVerifiedByUsername = await UserModel.findOne({
-      username,
+      username: usernameValue,
       isVerified: true,
     });
 
@@ -50,6 +55,7 @@ export async function GET(req: Request) {
     );
   } catch (error) {
     console.error("Error checking username uniqueness:", error);
+
     return Response.json(
       {
         success: false,

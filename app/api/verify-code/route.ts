@@ -8,7 +8,7 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { username, verifyCode } = body;
+    const { username, code } = body;
 
     const user = await UserModel.findOne({ username });
 
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const isCodeValid = user.verifyCode === verifyCode;
+    const isCodeValid = user.verifyCode === code;
     const isCodeExpired =
       new Date(user.verifyCodeExpiry) > new Date(Date.now());
 
