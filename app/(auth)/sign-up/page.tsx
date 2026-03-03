@@ -24,7 +24,7 @@ import { Eye, EyeOff } from "lucide-react";
 
 type SignUpValues = z.infer<typeof signUpSchema>;
 
-export default function Page() {
+export default function SignUpPage() {
   const [usernameMsg, setUsernameMsg] = useState("");
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
